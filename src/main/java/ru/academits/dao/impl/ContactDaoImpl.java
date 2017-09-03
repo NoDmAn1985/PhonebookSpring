@@ -5,6 +5,7 @@ import ru.academits.dao.ContactDao;
 import ru.academits.entity.Contact;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -13,7 +14,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 @Repository
 public class ContactDaoImpl implements ContactDao {
-    private List<Contact> contactList = new ArrayList<>();
+    private HashMap<Integer, Contact> contactList = new HashMap<>();
     private AtomicInteger idSequence = new AtomicInteger(0);
 
     public ContactDaoImpl() {
@@ -22,7 +23,7 @@ public class ContactDaoImpl implements ContactDao {
         contact.setFirstName("Иван");
         contact.setLastName("Иванов");
         contact.setPhone("9123456789");
-        contactList.add(contact);
+        contactList.put(contact.getId(), contact);
     }
 
     private int getNewId() {
@@ -32,11 +33,19 @@ public class ContactDaoImpl implements ContactDao {
 
     @Override
     public List<Contact> getAllContacts() {
-        return contactList;
+        return new ArrayList<>(contactList.values());
     }
 
     @Override
     public void add(Contact contact) {
-        contactList.add(contact);
+        int index = getNewId();
+        contact.setId(index);
+        contactList.put(index, contact);
+    }
+
+    @Override
+    public void remove(int index) {
+        System.out.println("удаляю " + index);
+        contactList.remove(index);
     }
 }

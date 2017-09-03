@@ -13,5 +13,7 @@ public interface ContactService {
 
     ContactValidation addContact(Contact contact);
 
+    void removeContact(int index);
+
     List<Contact> getAllContacts();
 }

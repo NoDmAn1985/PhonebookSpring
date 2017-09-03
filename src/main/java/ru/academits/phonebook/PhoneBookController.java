@@ -7,6 +7,7 @@ import ru.academits.converter.ContactToContectDtoConverter;
 import ru.academits.dto.ContactDto;
 import ru.academits.entity.Contact;
 import ru.academits.bean.ContactValidation;
+import ru.academits.savetoexcel.SaveToExcel;
 import ru.academits.service.ContactService;
 
 import java.util.List;
@@ -38,6 +39,16 @@ public class PhoneBookController {
         Contact contactEntity = contactDtoToContactConverter.convert(contact);
         return contactService.addContact(contactEntity);
     }
-}
 
+    @RequestMapping(value = "removeContact", method = RequestMethod.POST)
+    public void removeContact(@RequestBody ContactDto contact) {
+        Contact contactEntity = contactDtoToContactConverter.convert(contact);
+        contactService.removeContact(contactEntity.getId());
+    }
+
+    @RequestMapping(value = "saveToExcel", method = RequestMethod.POST)
+    public void saveToExcel() {
+        SaveToExcel.save(contactService.getAllContacts());
+    }
+}
 

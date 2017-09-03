@@ -3,6 +3,7 @@ function Contact(firstName, lastName, phone) {
     this.firstName = firstName();
     this.lastName = lastName();
     this.phone = phone();
+    this.id = 0;
     this.checked = ko.observable(false);
     this.shown = ko.observable(true);
 }
@@ -27,6 +28,7 @@ function PhoneBookModel() {
     self.firstName = ko.observable("");
     self.lastName = ko.observable("");
     self.phone = ko.observable("");
+    self.id = ko.observable("");
 
     self.firstNameError = ko.computed(function () {
         if (self.firstName()) {
@@ -98,13 +100,13 @@ function PhoneBookModel() {
             dataType: 'json',
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify(contact)
-        }).done(function() {
+        }).done(function () {
             self.serverValidation(false);
-        }).fail(function(ajaxRequest) {
+        }).fail(function (ajaxRequest) {
             var contactValidation = $.parseJSON(ajaxRequest.responseText);
             self.serverError(contactValidation.error);
             self.serverValidation(true);
-        }).always(function() {
+        }).always(function () {
             $.ajax({
                 type: "GET",
                 url: "/phoneBook/rcp/api/v1/getAllContacts",
@@ -116,6 +118,42 @@ function PhoneBookModel() {
         self.lastName("");
         self.phone("");
         self.validation(false);
+    };
+
+    self.removeContact = function (contact) {
+        var content = "Вы уверены, что хотите удалить контакт:\r\n" + contactToString(contact) + "?";
+        openDeleteDialog("Удалить контакт", content,
+            function () {
+                self.rows.remove(contact);
+                $.ajax({
+                    type: "POST",
+                    url: "/phoneBook/rcp/api/v1/removeContact",
+                    dataType: 'json',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(contact)
+                }).done(function () {
+                    // self.serverValidation(false);
+                }).fail(function (ajaxRequest) {
+                    // var contactValidation = $.parseJSON(ajaxRequest.responseText);
+                    // self.serverError(contactValidation.error);
+                    // self.serverValidation(true);
+                }).always(function () {
+                    $.ajax({
+                        type: "GET",
+                        url: "/phoneBook/rcp/api/v1/getAllContacts",
+                        success: self.getAllSuccessCallback
+                    });
+                });
+            }
+        )
+    };
+
+    self.save = function () {
+        $.ajax({
+            type: "POST",
+            url: "/phoneBook/rcp/api/v1/saveToExcel",
+            data: 1
+        });
     };
 
     self.getAllSuccessCallback = function (contactListFormServer) {

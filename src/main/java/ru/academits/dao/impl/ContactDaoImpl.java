@@ -45,7 +45,6 @@ public class ContactDaoImpl implements ContactDao {
 
     @Override
     public void remove(int index) {
-        System.out.println("удаляю " + index);
         contactList.remove(index);
     }
 }

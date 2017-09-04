@@ -128,9 +128,7 @@ function PhoneBookModel() {
                 $.ajax({
                     type: "POST",
                     url: "/phoneBook/rcp/api/v1/removeContact",
-                    dataType: 'json',
-                    contentType: "application/json; charset=utf-8",
-                    data: JSON.stringify(contact)
+                    data: {"index" : contact.id}
                 }).done(function () {
                     // self.serverValidation(false);
                 }).fail(function (ajaxRequest) {

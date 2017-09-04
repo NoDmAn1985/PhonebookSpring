@@ -41,9 +41,8 @@ public class PhoneBookController {
     }
 
     @RequestMapping(value = "removeContact", method = RequestMethod.POST)
-    public void removeContact(@RequestBody ContactDto contact) {
-        Contact contactEntity = contactDtoToContactConverter.convert(contact);
-        contactService.removeContact(contactEntity.getId());
+    public void removeContact(@RequestParam("index") int id) {
+        contactService.removeContact(id);
     }
 
     @RequestMapping(value = "saveToExcel", method = RequestMethod.POST)
